@@ -1,11 +1,15 @@
 package main
 
+import (
+	"fmt"
+)
+
 // PlayersDatabase holds
 type PlayersDatabase interface {
 	Add(players ...Player) error
 	Delete(IDs ...int) error
-	Get(IDs ...int) []Player
-	ListAll() []Player
+	Get(IDs ...int) []*Player
+	ListAll() []*Player
 	Update(ID int, player Player) error
 }
 
@@ -24,7 +28,7 @@ func NewInMemoryPlayersDatabase() *InMemoryPlayersDatabase {
 func (m *InMemoryPlayersDatabase) Add(players ...Player) error {
 	for _, player := range players {
 		player.ID = m.nextID
-		m.allPlayers[player.ID] = &player
+		m.allPlayers[m.nextID] = &player
 		m.nextID++
 	}
 	return nil
@@ -37,18 +41,19 @@ func (m *InMemoryPlayersDatabase) Delete(IDs ...int) error {
 	return nil
 }
 
-func (m *InMemoryPlayersDatabase) Get(IDs ...int) []Player {
-	players := make([]Player, len(IDs))
+func (m *InMemoryPlayersDatabase) Get(IDs ...int) []*Player {
+	players := make([]*Player, len(IDs))
 	for i, id := range IDs {
-		players[i] = *m.allPlayers[id]
+		players[i] = m.allPlayers[id]
 	}
+	fmt.Println(players)
 	return players
 }
 
-func (m *InMemoryPlayersDatabase) ListAll() []Player {
-	players := make([]Player, 0)
+func (m *InMemoryPlayersDatabase) ListAll() []*Player {
+	players := make([]*Player, 0)
 	for _, player := range m.allPlayers {
-		players = append(players, *player)
+		players = append(players, player)
 	}
 	return players
 }

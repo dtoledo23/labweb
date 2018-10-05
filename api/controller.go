@@ -17,7 +17,7 @@ func PlayerController() *mux.Router {
 
 	// Get player
 	r.
-		PathPrefix("/player/{id}").
+		PathPrefix("/player/{id}/").
 		Methods(http.MethodGet).
 		HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 			i, err := strconv.ParseInt(mux.Vars(req)["id"], 10, 64)
@@ -27,13 +27,14 @@ func PlayerController() *mux.Router {
 				return
 			}
 
+			fmt.Println("executed this")
 			player := db.Get(int(i))[0]
 			json.NewEncoder(resp).Encode(player)
 		})
 
 	// List all players
 	r.
-		PathPrefix("/player").
+		PathPrefix("/player/").
 		Methods(http.MethodGet).
 		HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 			json.NewEncoder(resp).Encode(db.ListAll())
